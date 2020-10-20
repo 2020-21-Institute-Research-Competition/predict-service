@@ -1,6 +1,9 @@
 from time import time, sleep
 from datetime import datetime, timedelta
 import cv2
+from pathlib import Path
+
+Path("./images").mkdir(parents=True, exist_ok=True)
 
 
 def imageCapturer(image_name, wait_time):
