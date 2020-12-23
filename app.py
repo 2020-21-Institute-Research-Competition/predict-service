@@ -1,17 +1,25 @@
-from flask import Flask, request
-import imageCapturer
-import os
+from flask import Flask
+from flask import render_template
+from flask import Response
+from video_streaming import VideoStreaming
+import signal
+
 
 app = Flask(__name__)
+streaming = VideoStreaming()
 
 
-@app.route("/capture", methods=["POST"])
-def capture():
-    json = request.get_json()
-    imageCapturer.imageCapturer(
-        image_name=json['id'], wait_time=5, show_label_time=2)
-    return 'Done'
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
 
 
-if __name__ == "__main__":
-    app.run()
+@app.route('/video_feed', methods=['GET'])
+def video_feed():
+    return Response(streaming.stream(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+if __name__ == '__main__':
+    signal.signal(signal.SIGINT, streaming.close)
+    app.run(debug=True)
