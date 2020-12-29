@@ -28,10 +28,10 @@ class VideoStreaming:
             file_name = 'frame.jpg'
             os.chdir('images')
             cv2.imwrite(file_name, frame)
-            os.chdir('../')
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + open('frame.jpg', 'rb').read() + b'\r\n')
         predict(file_name)
+        os.chdir('../')
 
         self.__cap.release()
         cv2.destroyAllWindows()
