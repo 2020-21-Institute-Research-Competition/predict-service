@@ -1,6 +1,6 @@
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
-import numpy as np
+# from tensorflow.keras.models import load_model
+# from tensorflow.keras.preprocessing import image
+# import numpy as np
 import cv2
 
 
@@ -12,7 +12,7 @@ class VideoStreaming:
     def stream(self):
         leaves_classifier = cv2.CascadeClassifier(
             r'classifiers/cascade.xml')
-        model = load_model(r'training_models/apple_leaves_diseases_model.h5')
+        # model = load_model(r'training_models/apple_leaves_diseases_model.h5')
 
         while True:
             ret, frame = self.__cap.read()
@@ -29,32 +29,35 @@ class VideoStreaming:
 
             # TODO: Make a Prediction here
             for (x, y, w, h) in leaves_detected:
+                # print('fuck 1')
                 cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
-                roi_gray = gray[y:y+h, x:x+w]
-                roi_gray = cv2.resize(roi_gray, (48, 48),
-                                      interpolation=cv2.INTER_AREA)
+                # roi_gray = gray[y:y+h, x:x+w]
+                # roi_gray = cv2.resize(roi_gray, (48, 48),
+                #                       interpolation=cv2.INTER_AREA)
+                # print('fuck2')
+                # if np.sum([roi_gray]) != 0:
+                #     roi = roi_gray.astype('float')/255.0
+                #     roi = image.img_to_array(roi)
+                #     roi = np.expand_dims(roi, axis=0)
 
-                if np.sum([roi_gray]) != 0:
-                    roi = roi_gray.astype('float')/255.0
-                    roi = image.img_to_array(roi)
-                    roi = np.expand_dims(roi, axis=0)
-
-                    preds = model.predict(roi)[0]
-                    label = class_labels[preds.argmax()]
-                    label_position = (x, y)
-                    cv2.putText(img, label, label_position,
-                                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                else:
-                    cv2.putText(img, 'No Leaf Found', (20, 60),
-                                cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 3)
-
+                #     print(roi)
+                #     print("123")
+                #     preds = model.predict(roi)[0]
+                #     label = class_labels[preds.argmax()]
+                #     label_position = (x, y)
+                #     cv2.putText(frame, label, label_position,
+                #                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                #     print('fuck3')
+                # else:
+                #     cv2.putText(frame, 'No Leaf Found', (20, 60),
+                #                 cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 3)
+                #     print('fuck4')
+                # print('fuck5')
             cv2.imshow('frame', frame)
 
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-            #cv2.imwrite('frame.jpg', frame)
-            # yield (b'--frame\r\n'
-            #        b'Content-Type: image/jpeg\r\n\r\n' + open('frame.jpg', 'rb').read() + b'\r\n')
+            cv2.imwrite('frame.jpg', frame)
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + open('frame.jpg', 'rb').read() + b'\r\n')
 
         self.__cap.release()
         cv2.destroyAllWindows()
