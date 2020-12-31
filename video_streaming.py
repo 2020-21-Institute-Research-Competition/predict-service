@@ -20,9 +20,9 @@ class VideoStreaming:
                 print("Error: failed to capture image")
                 break
 
-            cv2.imwrite(f'images\\{self.__file_name}', frame)
+            cv2.imwrite(f'images/{self.__file_name}', frame)
             yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + open(f'images\\{self.__file_name}', 'rb').read() + b'\r\n')
+                   b'Content-Type: image/jpeg\r\n\r\n' + open(f'images/{self.__file_name}', 'rb').read() + b'\r\n')
 
     def close(self, signal_received, frame):
         self.__cap.release()
