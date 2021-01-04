@@ -12,7 +12,7 @@ class Capture(threading.Thread):
         super().__init__()
         self.__prediction = Prediction()
         self.__model = load_model(r'models/apple_leaves_diseases_model.h5')
-        self.__model.make_predict_function()
+        self.__model._make_predict_function()
 
     def run(self):
         start_time = datetime.datetime.now()
