@@ -48,8 +48,8 @@ class Prediction:
         keras.backend.set_session(session)
 
         image = self.__prepare_image(file_name)
-        print(type(image))
-        print(image)
+        # print(type(image))
+        # print(image)
 
         try:
             with session.as_default():
@@ -59,8 +59,8 @@ class Prediction:
                         predictions, top=1)
                     return results
         except Exception as ex:
-            print("Something went wrong")
-            # print(ex)
+            #print("Something went wrong")
+            print(ex)
 
         # predictions = model.predict(image)
         # results = self.__decode_predictions_modified(predictions, top=1)
