@@ -15,26 +15,27 @@ class Capture(threading.Thread):
         # self.__model._make_predict_function()
 
     def run(self):
-        start_time = datetime.datetime.now()
-        while True:
-            # Change to default seconds later
-            if (datetime.datetime.now() - start_time).total_seconds() >= 5:
-                ID = uuid.uuid1()
-                file_name = f'{ID}.jpg'  # Change to id later
-                cap = cv2.VideoCapture(0)
-                ret, frame = cap.read()
+        # start_time = datetime.datetime.now()
+        # while True:
+        #     # Change to default seconds later
+        #     if (datetime.datetime.now() - start_time).total_seconds() >= 5:
+        ID = uuid.uuid1()
+        file_name = f'{ID}.jpg'  # Change to id later
+        cap = cv2.VideoCapture(0)
+        ret, frame = cap.read()
 
-                if not ret:
-                    print("Error: failed to capture image")
-                    break
+        if not ret:
+            print("Error: failed to capture image")
+            # break
+            return
 
-                cv2.imwrite(f'images/predicted/{file_name}', frame)
-                with open('predicted_results.csv', 'a', newline='', encoding='utf-8') as csv_file:
-                    csv_writer = csv.writer(csv_file, delimiter=',')
-                    result = self.__prediction.predict(file_name, self.__model)
-                    csv_writer.writerow(
-                        [ID, result, f'images/predicted/{file_name}'])
+        cv2.imwrite(f'images/predicted/{file_name}', frame)
+        with open('predicted_results.csv', 'a', newline='', encoding='utf-8') as csv_file:
+            csv_writer = csv.writer(csv_file, delimiter=',')
+            result = self.__prediction.predict(file_name, self.__model)
+            csv_writer.writerow(
+                [ID, result, f'images/predicted/{file_name}'])
 
-                cap.release()
-                cv2.destroyAllWindows()
-                start_time = datetime.datetime.now()
+        cap.release()
+        cv2.destroyAllWindows()
+        # start_time = datetime.datetime.now()

@@ -35,6 +35,7 @@ class Prediction:
 
     def predict(self, file_name, model):
         image = self.__prepare_image(file_name)
+        global graph
         graph = tf.get_default_graph()
 
         try:
