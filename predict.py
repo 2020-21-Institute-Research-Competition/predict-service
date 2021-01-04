@@ -57,7 +57,7 @@ class Prediction:
                         predictions, top=1)
                     return results
         except Exception as ex:
-            print("Something went wrong!")
+            print(ex)
 
         # predictions = model.predict(image)
         # results = self.__decode_predictions_modified(predictions, top=1)
