@@ -54,9 +54,12 @@ class Prediction:
         try:
             with session.as_default():
                 with session.graph.as_default():
+                    print("1")
                     predictions = model.predict(image)
+                    print("2")
                     results = self.__decode_predictions_modified(
                         predictions, top=1)
+                    print("3")
                     return results
         except Exception as ex:
             #print("Something went wrong")
