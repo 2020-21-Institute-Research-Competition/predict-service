@@ -34,7 +34,31 @@ class Prediction:
         return tf.keras.applications.mobilenet.preprocess_input(img_array_expanded_dims)
 
     def predict(self, file_name, model):
+        config = tf.ConfigProto(
+            device_count={'GPU': 1},
+            intra_op_parallelism_threads=1,
+            allow_soft_placement=True
+        )
+
+        config.gpu_options.allow_growth = True
+        config.gpu_options.per_process_gpu_memory_fraction = 0.6
+
+        session = tf.Session(config=config)
+
+        keras.backend.set_session(session)
+
         image = self.__prepare_image(file_name)
-        predictions = model.predict(image)
-        results = self.__decode_predictions_modified(predictions, top=1)
-        return results
+
+        try:
+            with session.as_default():
+                with session.graph.as_default():
+                    predictions = model.predict(image)
+                    results = self.__decode_predictions_modified(
+                        predictions, top=1)
+                    return results
+        except Exception as ex:
+            print("Something went wrong!")
+
+        # predictions = model.predict(image)
+        # results = self.__decode_predictions_modified(predictions, top=1)
+        # return results
