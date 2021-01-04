@@ -3,10 +3,11 @@ from flask import render_template
 from flask import Response
 from flask import request
 from flask import jsonify
-from video_streaming import VideoStreaming
-from capture import Capture
 import signal
 import csv
+
+from video_streaming import VideoStreaming
+from capture import Capture
 
 
 app = Flask(__name__)

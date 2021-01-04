@@ -28,12 +28,12 @@ class Capture(threading.Thread):
                     print("Error: failed to capture image")
                     break
 
-                cv2.imwrite(f'images\\predicted\\{file_name}', frame)
+                cv2.imwrite(f'images/predicted/{file_name}', frame)
                 with open('predicted_results.csv', 'a', newline='', encoding='utf-8') as csv_file:
                     csv_writer = csv.writer(csv_file, delimiter=',')
                     result = self.__prediction.predict(file_name, self.__model)
                     csv_writer.writerow(
-                        [ID, result, f'images\\predicted\\{file_name}'])
+                        [ID, result, f'images/predicted/{file_name}'])
 
                 cap.release()
                 cv2.destroyAllWindows()
