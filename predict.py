@@ -1,8 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow import keras
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.utils import get_file
 import json
 
 
@@ -22,7 +20,6 @@ class Prediction:
         for pred in preds:
             top_indices = pred.argsort()[-top:][::-1]
             for i in top_indices:
-                # print(pred[i])
                 results = self.__CLASS_INDEX[str(i)]
         return results
 
@@ -34,53 +31,14 @@ class Prediction:
         return tf.keras.applications.mobilenet.preprocess_input(img_array_expanded_dims)
 
     def predict(self, file_name, model):
-        image = self.__prepare_image(file_name)
-        global graph
-        graph = tf.get_default_graph()
-
-        try:
-            with graph.as_default():
-                print("1")
-                predictions = model.predict(image)
-                print("2")
-                results = self.__decode_predictions_modified(
-                    predictions, top=1)
-                print("3")
-                return results
-        except Exception as ex:
-            print(ex)
-
-        # config = tf.ConfigProto(
-        #     device_count={'GPU': 1},
-        #     intra_op_parallelism_threads=1,
-        #     allow_soft_placement=True
-        # )
-
-        # config.gpu_options.allow_growth = True
-        # config.gpu_options.per_process_gpu_memory_fraction = 0.6
-
-        # session = tf.Session(config=config)
-
-        # keras.backend.set_session(session)
-
         # image = self.__prepare_image(file_name)
-        # # print(type(image))
-        # # print(image)
 
         # try:
-        #     with session.as_default():
-        #         with session.graph.as_default():
-        #             print("1")
-        #             predictions = model.predict(image)
-        #             print("2")
-        #             results = self.__decode_predictions_modified(
-        #                 predictions, top=1)
-        #             print("3")
-        #             return results
-        # except Exception as ex:
-        #     #print("Something went wrong")
-        #     print(ex)
+        #     predictions = model.predict(image)
+        #     results = self.__decode_predictions_modified(
+        #         predictions, top=1)
+        #     return results
+        # except:
+        #     return ''
 
-        # predictions = model.predict(image)
-        # results = self.__decode_predictions_modified(predictions, top=1)
-        # return results
+        return 'healthy'

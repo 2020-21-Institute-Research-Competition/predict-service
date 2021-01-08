@@ -1,41 +1,26 @@
-import cv2
-import datetime
-import threading
-import csv
 import uuid
-from predict import Prediction
+import csv
+import cv2
 from tensorflow.keras.models import load_model
 
+from predict import Prediction
 
-class Capture(threading.Thread):
-    def __init__(self):
+
+class Capture:
+    def __init__(self, frame):
         super().__init__()
         self.__prediction = Prediction()
         self.__model = load_model(r'models/apple_leaves_diseases_model.h5')
-        # self.__model._make_predict_function()
+        self.__frame = frame
 
     def run(self):
-        # start_time = datetime.datetime.now()
-        # while True:
-        #     # Change to default seconds later
-        #     if (datetime.datetime.now() - start_time).total_seconds() >= 5:
         ID = uuid.uuid1()
-        file_name = f'{ID}.jpg'  # Change to id later
-        cap = cv2.VideoCapture(0)
-        ret, frame = cap.read()
+        file_name = f'{ID}.jpg'
+        image_path = f'images/predicted/{file_name}'
 
-        if not ret:
-            print("Error: failed to capture image")
-            # break
-            return
-
-        cv2.imwrite(f'images/predicted/{file_name}', frame)
+        cv2.imwrite(image_path, self.__frame)
         with open('predicted_results.csv', 'a', newline='', encoding='utf-8') as csv_file:
             csv_writer = csv.writer(csv_file, delimiter=',')
             result = self.__prediction.predict(file_name, self.__model)
-            csv_writer.writerow(
-                [ID, result, f'images/predicted/{file_name}'])
-
-        cap.release()
-        cv2.destroyAllWindows()
-        # start_time = datetime.datetime.now()
+            csv_writer.writerow([ID, result, image_path])
+            return {'id': str(ID), 'status': result, 'path': image_path}
