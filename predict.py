@@ -24,21 +24,19 @@ class Prediction:
         return results
 
     def __prepare_image(self, file_name):
-        img_path = 'images/predicted/'
+        img_path = 'images/'
         img = image.load_img(img_path + file_name, target_size=(224, 224))
         img_array = image.img_to_array(img)
         img_array_expanded_dims = np.expand_dims(img_array, axis=0)
         return tf.keras.applications.mobilenet.preprocess_input(img_array_expanded_dims)
 
     def predict(self, file_name, model):
-        # image = self.__prepare_image(file_name)
+        image = self.__prepare_image(file_name)
 
-        # try:
-        #     predictions = model.predict(image)
-        #     results = self.__decode_predictions_modified(
-        #         predictions, top=1)
-        #     return results
-        # except:
-        #     return ''
-
-        return 'healthy'
+        try:
+            predictions = model.predict(image)
+            results = self.__decode_predictions_modified(
+                predictions, top=1)
+            return results
+        except:
+            return ''

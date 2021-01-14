@@ -1,31 +1,35 @@
 from flask import Flask
-from flask import render_template
-from flask import Response
-import signal
+from flask import request
+from werkzeug.utils import secure_filename
+import uuid
+import json
+import requests
 
-from video_streaming import VideoStreaming
+from capture import Capture
 
 
 app = Flask(__name__)
-streaming = VideoStreaming()
 
 
-@app.route('/')
+@app.route('/', methods=['POST'])
 def index():
-    return render_template('index.html')
+    if request.method == 'POST':
+        image = request.files['file']
+        ID = str(uuid.uuid1().hex)
+        filename = ID + secure_filename(image.filename)
+        path = f'images/{filename}'
+        image.save(path)
 
-
-@app.route('/video_feed')
-def video_feed():
-    return Response(streaming.stream(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-@app.route('/stop')
-def stop():
-    return streaming.close(None, None)
+        try:
+            result = json.dumps(Capture(ID, filename, path).run())
+            headers = {'Content-Type': 'application/json'}
+            res = requests.post(
+                'http://192.168.43.142:8080/api/v1/CZon9KvrGpNouoX0rwXi/telemetry', headers=headers, data=result)
+            return 'Predict successfully'
+        except Exception as ex:
+            print(ex)
+            return 'Predict unsuccessfully'
 
 
 if __name__ == '__main__':
-    signal.signal(signal.SIGINT, streaming.close)
     app.run(host='0.0.0.0', debug=True)
