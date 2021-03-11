@@ -24,7 +24,7 @@ class Prediction:
         return results
 
     def __prepare_image(self, file_name):
-        img_path = 'images/'
+        img_path = 'image'
         img = image.load_img(img_path + file_name, target_size=(224, 224))
         img_array = image.img_to_array(img)
         img_array_expanded_dims = np.expand_dims(img_array, axis=0)
